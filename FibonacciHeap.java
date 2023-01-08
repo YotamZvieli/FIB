@@ -58,9 +58,46 @@ public class FibonacciHeap
     */
     public void deleteMin()
     {
-
-     	
+    HeapNode tmpMinNode = this.min;
+    if (tmpMinNode.child == null){
+        // bridge min node
     }
+    else {
+        // make sons as roots
+    }
+    // make all root non-marked
+    // considollation - add root to array and connect when
+        // find new min
+
+    }
+    /**
+     * private HeapNode connect(HeapNode node1, HeapNode node2)
+     *
+     * connect two trees with the same rank and return the smallest node after connect.
+     *
+     */
+
+    private HeapNode connect(HeapNode node1, HeapNode node2){
+        HeapNode root;
+        HeapNode nodeToConnect;
+        if (node1.key < node2.key){
+            root = node1;
+            nodeToConnect = node2;
+        }
+        else{
+            root = node2;
+            nodeToConnect = node1;
+            }
+        HeapNode tmpChild = root.child;
+        root.child = nodeToConnect;
+        tmpChild.prev = root.child;
+        root.child.next = tmpChild;
+        tmpChild.prev.next = root.child;
+        nodeToConnect.parent = root;
+        return root;
+    }
+
+
 
    /**
     * public HeapNode findMin()
@@ -166,21 +203,52 @@ public class FibonacciHeap
     public void decreaseKey(HeapNode x, int delta)
     {
         x.key -= delta;
-        if (x.parent == null){
-            if (this.min.key > x.key){
-                this.min = x;
-            }
+        if (this.min.key > x.key){
+            this.min = x;
         }
-        else {
+
+        if (x.parent != null){ // x is not root
             if (x.key < x.parent.key){
                 cascadingCut(x);
             }
         }
-    	
+
     }
 
-
+    public void cutNode(HeapNode node){
+        HeapNode tmpNext = node.next;
+        HeapNode tmpPrev = node.prev;
+        HeapNode tmpParent = node.parent;
+        if (node == node.next){ // node has no sibiling
+            tmpParent.child = null;
+        }
+        else {
+            if (tmpParent.child.key == node.key) {
+                tmpParent.child = tmpNext;
+            }
+            tmpPrev.next = tmpNext;
+            tmpNext.prev = tmpPrev;
+        }
+        node.parent = null;
+        node.next = this.first;
+        node.prev = this.first.prev;
+        this.first.prev.next = node;
+        this.first.prev = node;
+        this.first = node;
+    }
     public void cascadingCut(HeapNode node){
+        if (node.parent.isMark()){
+            while (node.parent.isMark()){
+                HeapNode tmpParent = node.parent;
+                cutNode(node);
+                node = tmpParent;
+            }
+            node.parent.mark = true;
+        }
+        else {
+            node.parent.mark = true;
+            cutNode(node);
+        }
 
     }
    /**
@@ -262,6 +330,9 @@ public class FibonacciHeap
         private boolean mark;
 
        public boolean isMark() {
+           if (this.parent == null){ //if this is root
+               this.mark = false;
+           }
            return mark;
        }
 
