@@ -1,3 +1,6 @@
+import java.lang.management.GarbageCollectorMXBean;
+import java.util.GregorianCalendar;
+
 /**
  * FibonacciHeap
  *
@@ -59,16 +62,38 @@ public class FibonacciHeap
     public void deleteMin()
     {
     HeapNode tmpMinNode = this.min;
+    HeapNode prevNode = this.min.prev;
+    HeapNode nextNode = this.min.next;
     if (tmpMinNode.child == null){
-        // bridge min node
+        nextNode.prev = prevNode;
+        prevNode.next = nextNode;
+
     }
     else {
-        // make sons as roots
+        HeapNode child = this.min.child;
+        prevNode.next = child;
+        child.prev.next = nextNode;
+        nextNode.prev = child.prev;
+        child.prev = prevNode;
     }
-    // make all root non-marked
-    // considollation - add root to array and connect when
-        // find new min
-
+    if(this.first == this.min){
+        this.first = this.min.child;
+    }
+    HeapNode curr = this.first;
+    while (curr.next != this.first){
+        curr.mark = false;
+        curr = curr.next;
+    }
+    this.considulation();
+    curr = this.first;
+    HeapNode minNode = curr;
+    while (curr.next != this.first){
+        if(minNode.key > curr.key){
+            minNode = curr;
+        }
+        curr = curr.next;
+    }
+    this.min = minNode;
     }
     /**
      * private HeapNode connect(HeapNode node1, HeapNode node2)
@@ -97,6 +122,36 @@ public class FibonacciHeap
         return root;
     }
 
+    private void considulation (){ // W.C - O(n) amort - O(logn)
+        HeapNode[] nodeBox = new HeapNode[this.size];
+        HeapNode curr = this.first;
+        while (curr.next != this.first){
+            HeapNode tmp = curr.next;
+            curr.next = null; // unplugged curr from siblings
+            curr.prev = null;
+            int tmpRank = curr.rank;
+            HeapNode tmpCurr = curr;
+
+            while (nodeBox[tmpRank] != null) {
+                tmpCurr = connect(tmpCurr, nodeBox[tmpRank]);
+                nodeBox[tmpRank] = null;
+                tmpRank = tmpCurr.rank;
+            }
+            nodeBox[tmpRank] = tmpCurr; // the cell is empty
+            curr = tmp;
+        }
+        int i = 0;
+        for (i =0; i < nodeBox.length; i ++){
+            if(nodeBox[i] != null){
+                this.first = nodeBox[i];
+                break;
+            }
+        }
+        for (;i < nodeBox.length; i ++) {
+
+        }
+
+        }
 
 
    /**
