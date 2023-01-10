@@ -338,7 +338,7 @@ public class FibonacciHeap
     */
     public int nonMarked() 
     {    
-        return -232; // should be replaced by student code
+        return this.marked;
     }
 
    /**
