@@ -10,6 +10,8 @@ public class FibonacciHeap
 {
     HeapNode min;
     HeapNode first;
+    int marked;
+
 
     int size;
    /**
@@ -81,19 +83,15 @@ public class FibonacciHeap
     }
     HeapNode curr = this.first;
     while (curr.next != this.first){
-        curr.mark = false;
+        if(curr.mark) {
+            curr.mark = false;
+            this.marked -= 1;
+        }
+        curr.parent = null;
         curr = curr.next;
     }
     this.considulation();
-    curr = this.first;
-    HeapNode minNode = curr;
-    while (curr.next != this.first){
-        if(minNode.key > curr.key){
-            minNode = curr;
-        }
-        curr = curr.next;
-    }
-    this.min = minNode;
+    this.size -= 1;
     }
     /**
      * private HeapNode connect(HeapNode node1, HeapNode node2)
@@ -147,9 +145,23 @@ public class FibonacciHeap
                 break;
             }
         }
+        HeapNode lastConnected = this.first;
+        HeapNode nextToConnect = null;
         for (;i < nodeBox.length; i ++) {
-
+            if(nodeBox[i] != null){
+                nextToConnect = nodeBox[i];
+                nextToConnect.prev = lastConnected;
+                lastConnected.next = nextToConnect;
+                lastConnected = nextToConnect;
+            }
         }
+        HeapNode minNode = new HeapNode(Integer.MAX_VALUE);
+        for (int j = 0; j < nodeBox.length;j++){
+            if (nodeBox[j]  != null && nodeBox[j].key < minNode.key){
+                minNode = nodeBox[j];
+            }
+        }
+        this.min = minNode;
 
         }
 
@@ -271,6 +283,10 @@ public class FibonacciHeap
     }
 
     public void cutNode(HeapNode node){
+        if(node.mark){
+            node.mark = false;
+            this.marked -= 1;
+        }
         HeapNode tmpNext = node.next;
         HeapNode tmpPrev = node.prev;
         HeapNode tmpParent = node.parent;
@@ -298,13 +314,22 @@ public class FibonacciHeap
                 cutNode(node);
                 node = tmpParent;
             }
-            node.parent.mark = true;
+            if(!ifRoot(node.parent)) {
+                node.parent.mark = true;
+                this.marked += 1;
+            }
         }
         else {
-            node.parent.mark = true;
-            cutNode(node);
+            if(!ifRoot(node.parent)) {
+                node.parent.mark = true;
+                this.marked += 1;
+                cutNode(node);
+            }
         }
 
+    }
+    private boolean ifRoot(HeapNode node){
+        return node.parent == null;
     }
    /**
     * public int nonMarked() 
