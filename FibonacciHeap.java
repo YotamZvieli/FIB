@@ -11,9 +11,10 @@ public class FibonacciHeap
     HeapNode min;
     HeapNode first;
     int marked;
-
-
+    int rootsNum;
     int size;
+    static int totalLinks;
+    static int totalCuts;
    /**
     * public boolean isEmpty()
     *
@@ -52,6 +53,7 @@ public class FibonacciHeap
             this.first = newNode;
         }
         this.size += 1;
+        this.rootsNum += 1;
         return new HeapNode(key); // should be replaced by student code
     }
 
@@ -101,6 +103,7 @@ public class FibonacciHeap
      */
 
     private HeapNode connect(HeapNode node1, HeapNode node2){
+        totalLinks += 1;
         HeapNode root;
         HeapNode nodeToConnect;
         if (node1.key < node2.key){
@@ -156,9 +159,13 @@ public class FibonacciHeap
             }
         }
         HeapNode minNode = new HeapNode(Integer.MAX_VALUE);
+        this.rootsNum = 0;
         for (int j = 0; j < nodeBox.length;j++){
             if (nodeBox[j]  != null && nodeBox[j].key < minNode.key){
                 minNode = nodeBox[j];
+            }
+            if (nodeBox[j]  != null){
+                this.rootsNum += 1;
             }
         }
         this.min = minNode;
@@ -172,7 +179,7 @@ public class FibonacciHeap
     * Returns the node of the heap whose key is minimal, or null if the heap is empty.
     *
     */
-    public HeapNode findMin()
+    public HeapNode findMin() // O(1)
     {
         return min;
     }
@@ -191,6 +198,7 @@ public class FibonacciHeap
             this.min = heap2.min;
             this.first = heap2.first;
             this.size = heap2.size();
+            this.rootsNum = heap2.rootsNum;
         }
         else { //both heaps are not empty
             HeapNode lastOne = this.first.prev;
@@ -203,6 +211,7 @@ public class FibonacciHeap
                 this.min = heap2.min;
             }
             this.size += heap2.size();
+            this.rootsNum += heap2.rootsNum;
         }
     }
 
@@ -283,6 +292,8 @@ public class FibonacciHeap
     }
 
     public void cutNode(HeapNode node){
+        this.rootsNum += 1;
+        totalCuts += 1;
         if(node.mark){
             node.mark = false;
             this.marked -= 1;
@@ -309,7 +320,7 @@ public class FibonacciHeap
     }
     public void cascadingCut(HeapNode node){
         if (node.parent.isMark()){
-            while (node.parent.isMark()){
+            while (node.parent != null && node.parent.isMark()){
                 HeapNode tmpParent = node.parent;
                 cutNode(node);
                 node = tmpParent;
@@ -338,7 +349,7 @@ public class FibonacciHeap
     */
     public int nonMarked() 
     {    
-        return -232; // should be replaced by student code
+        return (this.size - this.marked);
     }
 
    /**
@@ -352,7 +363,7 @@ public class FibonacciHeap
     */
     public int potential() 
     {    
-        return -234; // should be replaced by student code
+        return this.rootsNum + 2*this.marked;
     }
 
    /**
@@ -365,7 +376,7 @@ public class FibonacciHeap
     */
     public static int totalLinks()
     {    
-    	return -345; // should be replaced by student code
+    	return totalLinks;
     }
 
    /**
@@ -377,7 +388,7 @@ public class FibonacciHeap
     */
     public static int totalCuts()
     {    
-    	return -456; // should be replaced by student code
+    	return totalCuts; // should be replaced by student code
     }
 
      /**
@@ -390,6 +401,20 @@ public class FibonacciHeap
     */
     public static int[] kMin(FibonacciHeap H, int k)
     {
+        FibonacciHeap helpHeap = new FibonacciHeap();
+        int[] arr = new int[k];
+        helpHeap.insert(H.findMin().key);
+        HeapNode curr = H.findMin();
+        for (int i =0; i < k; i++){
+
+            arr[i] = helpHeap.findMin().key;
+            helpHeap.deleteMin();
+
+            HeapNode child = curr.child;
+            while (){
+                helpHeap.insert();
+            }
+        }
         return new int[100];
     }
     
