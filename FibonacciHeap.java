@@ -338,7 +338,7 @@ public class FibonacciHeap
     */
     public int nonMarked() 
     {    
-        return this.marked;
+        return (this.size - this.marked);
     }
 
    /**
