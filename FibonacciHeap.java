@@ -57,6 +57,29 @@ public class FibonacciHeap
         return new HeapNode(key); // should be replaced by student code
     }
 
+    public HeapNode insert(int key,HeapNode originalCopyNode)
+    {
+        HeapNode newNode = new HeapNode(key,originalCopyNode);
+        if(this.isEmpty()){
+            this.min = newNode;
+            return newNode;
+        }
+        else {
+            if(this.min.key > key){
+                this.min = newNode;
+            }
+            newNode.next = this.first;
+            HeapNode prevOfFirst = this.first.prev;
+            this.first.prev = newNode;
+            newNode.prev = prevOfFirst;
+            prevOfFirst.next = newNode;
+            this.first = newNode;
+        }
+        this.size += 1;
+        this.rootsNum += 1;
+        return new HeapNode(key); // should be replaced by student code
+    }
+
    /**
     * public void deleteMin()
     *
@@ -254,7 +277,7 @@ public class FibonacciHeap
             arr[rank] += 1;
         }
 
-        return arr; //	 to be replaced by student code
+        return arr;
     }
 	
    /**
@@ -403,19 +426,24 @@ public class FibonacciHeap
     {
         FibonacciHeap helpHeap = new FibonacciHeap();
         int[] arr = new int[k];
-        helpHeap.insert(H.findMin().key);
-        HeapNode curr = H.findMin();
+        HeapNode Hmin = H.findMin();
+        helpHeap.insert(Hmin.key,Hmin);
+        HeapNode curr = Hmin;
+        HeapNode pointer = null;
         for (int i =0; i < k; i++){
-
             arr[i] = helpHeap.findMin().key;
+            pointer = helpHeap.findMin().originPointer;
             helpHeap.deleteMin();
-
-            HeapNode child = curr.child;
-            while (){
-                helpHeap.insert();
+            if(pointer.child != null) {
+                curr = pointer.child;
+                while (curr.next != pointer.child) {
+                    helpHeap.insert(curr.key,curr);
+                    curr = curr.next;
+                }
+                helpHeap.insert(curr.key,curr);
             }
         }
-        return new int[100];
+        return arr;
     }
     
    /**
@@ -449,73 +477,17 @@ public class FibonacciHeap
         private HeapNode next;
         private HeapNode prev;
         private HeapNode parent;
+        private HeapNode originPointer;
 
 
-       public HeapNode(int key) {}
-       public HeapNode(int key, String info, int rank, boolean mark, HeapNode child, HeapNode next, HeapNode prev, HeapNode parent) {
-    		this.info = info;
-            this.key = key;
-            this.rank = rank;
-            this.mark = mark;
-            this.child = child;
-            this.next = next;
-            this.prev = prev;
-            this.parent = parent;
-    	}
-
-    	public int getKey() {
-    		return this.key;
-    	}
-    	public void setKey(int key) {
-    		this.key = key;
-    	}
-
-       public HeapNode getPrev() {
-           return prev;
+       public HeapNode(int key) {
+           this.key = key;
        }
 
-       public void setPrev(HeapNode prev) {
-           this.prev = prev;
-       }
-
-       public HeapNode getNext() {
-           return next;
-       }
-
-       public void setNext(HeapNode next) {
-           this.next = next;
-       }
-
-       public HeapNode getChild() {
-           return child;
-       }
-
-       public void setChild(HeapNode child) {
-           this.child = child;
-       }
-
-       public int getRank() {
-           return rank;
-       }
-
-       public void setRank(int rank) {
-           this.rank = rank;
-       }
-       public HeapNode getParent() {
-           return parent;
-       }
-
-       public void setParent(HeapNode parent) {
-           this.parent = parent;
-       }
-
-       public void setInfo(String info) {
-           this.info = info;
-       }
-
-       public String getInfo() {
-           return info;
-       }
+        public HeapNode(int key,HeapNode originNode){
+           this.key = key;
+           this.originPointer = originNode;
+        }
 
    }
 }
