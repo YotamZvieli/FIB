@@ -39,6 +39,9 @@ public class FibonacciHeap
     	HeapNode newNode = new HeapNode(key);
         if(this.isEmpty()){
             this.min = newNode;
+            this.first = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
             return newNode;
         }
         else {
@@ -126,6 +129,18 @@ public class FibonacciHeap
      */
 
     private HeapNode connect(HeapNode node1, HeapNode node2){
+        if(node1.child == null && node2.child == null){
+            if(node1.key < node2.key){
+                node1.child = node2;
+                node2.parent = node1;
+                return node1;
+            }
+            else {
+                node2.child = node1;
+                node1.parent = node2;
+                return node2;
+            }
+        }
         totalLinks += 1;
         HeapNode root;
         HeapNode nodeToConnect;
