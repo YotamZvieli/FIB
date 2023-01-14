@@ -35,7 +35,9 @@ public class FibonacciHeap
     * Returns the newly created node.
     */
     public HeapNode insert(int key)
-    {    
+    {
+        this.size += 1;
+        this.rootsNum += 1;
     	HeapNode newNode = new HeapNode(key);
         if(this.isEmpty()){
             this.min = newNode;
@@ -55,16 +57,19 @@ public class FibonacciHeap
             prevOfFirst.next = newNode;
             this.first = newNode;
         }
-        this.size += 1;
-        this.rootsNum += 1;
-        return new HeapNode(key); // should be replaced by student code
+        return newNode;
     }
 
     public HeapNode insert(int key,HeapNode originalCopyNode)
     {
+        this.size += 1;
+        this.rootsNum += 1;
         HeapNode newNode = new HeapNode(key,originalCopyNode);
         if(this.isEmpty()){
             this.min = newNode;
+            this.first = newNode;
+            newNode.next = newNode;
+            newNode.prev = newNode;
             return newNode;
         }
         else {
@@ -78,9 +83,7 @@ public class FibonacciHeap
             prevOfFirst.next = newNode;
             this.first = newNode;
         }
-        this.size += 1;
-        this.rootsNum += 1;
-        return new HeapNode(key); // should be replaced by student code
+        return newNode;
     }
 
    /**
@@ -94,6 +97,27 @@ public class FibonacciHeap
     HeapNode tmpMinNode = this.min;
     HeapNode prevNode = this.min.prev;
     HeapNode nextNode = this.min.next;
+    if(this.rootsNum == 1 && this.min.child != null){
+        this.first = tmpMinNode.child;
+        this.size -= 1;
+        HeapNode current = this.first;
+        HeapNode miniNode = new HeapNode(Integer.MAX_VALUE);
+        int cnt = 0;
+        while (current.next != this.first){
+            current.parent = null;
+            if(current.key < miniNode.key){
+                miniNode = current;
+            }
+            current = current.next;
+            cnt += 1;
+        }
+        if(current.key < miniNode.key){
+            miniNode = current;
+        }
+        current.parent = null;
+        this.rootsNum = cnt + 1;
+        return;
+    }
     if (tmpMinNode.child == null){
         nextNode.prev = prevNode;
         prevNode.next = nextNode;
@@ -129,19 +153,23 @@ public class FibonacciHeap
      */
 
     private HeapNode connect(HeapNode node1, HeapNode node2){
+        totalLinks += 1;
         if(node1.child == null && node2.child == null){
             if(node1.key < node2.key){
                 node1.child = node2;
                 node2.parent = node1;
+                node1.rank = 1;
+                node2.next = node2;
                 return node1;
             }
             else {
                 node2.child = node1;
                 node1.parent = node2;
+                node2.rank = 1;
+                node1.next = node1;
                 return node2;
             }
         }
-        totalLinks += 1;
         HeapNode root;
         HeapNode nodeToConnect;
         if (node1.key < node2.key){
@@ -152,12 +180,25 @@ public class FibonacciHeap
             root = node2;
             nodeToConnect = node1;
             }
-        HeapNode tmpChild = root.child;
-        root.child = nodeToConnect;
-        tmpChild.prev = root.child;
-        root.child.next = tmpChild;
-        tmpChild.prev.next = root.child;
-        nodeToConnect.parent = root;
+        if(root.child.next == root.child){
+            root.child.prev = nodeToConnect;
+            nodeToConnect.next = root.child;
+            nodeToConnect.prev = root.child;
+            root.child.next = nodeToConnect;
+            root.child = nodeToConnect;
+            root.child.parent = root;
+
+        }
+        else {
+            HeapNode tmpChild = root.child;
+            root.child = nodeToConnect;
+            root.child.prev = tmpChild.prev;
+            tmpChild.prev.next = root.child;
+            tmpChild.prev = root.child;
+            root.child.next = tmpChild;
+            nodeToConnect.parent = root;
+        }
+        root.rank += 1;
         return root;
     }
 
@@ -179,19 +220,22 @@ public class FibonacciHeap
             nodeBox[tmpRank] = tmpCurr; // the cell is empty
             curr = tmp;
         }
-        int i = 0;
-        for (i =0; i < nodeBox.length; i ++){
+        int p = 0;
+        for (int i =0; i < nodeBox.length; i ++){
             if(nodeBox[i] != null){
                 this.first = nodeBox[i];
+                p = i;
                 break;
             }
         }
         HeapNode lastConnected = this.first;
         HeapNode nextToConnect = null;
-        for (;i < nodeBox.length; i ++) {
+        for (int i = p + 1; i < nodeBox.length; i ++) {
             if(nodeBox[i] != null){
                 nextToConnect = nodeBox[i];
                 nextToConnect.prev = lastConnected;
+                nextToConnect.next = this.first;
+                this.first.prev = nextToConnect;
                 lastConnected.next = nextToConnect;
                 lastConnected = nextToConnect;
             }
@@ -497,11 +541,15 @@ public class FibonacciHeap
 
        public HeapNode(int key) {
            this.key = key;
+           this.next = this;
+           this.prev = this;
        }
 
         public HeapNode(int key,HeapNode originNode){
            this.key = key;
            this.originPointer = originNode;
+            this.next = this;
+            this.prev = this;
         }
 
    }
