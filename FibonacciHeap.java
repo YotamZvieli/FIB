@@ -131,7 +131,12 @@ public class FibonacciHeap
         child.prev = prevNode;
     }
     if(this.first == this.min){
-        this.first = this.min.child;
+        if (this.first.child != null){
+            this.first = this.min.child;
+        }
+        else {
+            this.first = this.first.next;
+        }
     }
     HeapNode curr = this.first;
     while (curr.next != this.first){
@@ -202,16 +207,73 @@ public class FibonacciHeap
         return root;
     }
 
+    public static int getTotalLinks() {
+        return totalLinks;
+    }
+
+    public static void setTotalLinks(int totalLinks) {
+        FibonacciHeap.totalLinks = totalLinks;
+    }
+
+    public static int getTotalCuts() {
+        return totalCuts;
+    }
+
+    public static void setTotalCuts(int totalCuts) {
+        FibonacciHeap.totalCuts = totalCuts;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getRootsNum() {
+        return rootsNum;
+    }
+
+    public void setRootsNum(int rootsNum) {
+        this.rootsNum = rootsNum;
+    }
+
+    public HeapNode getMin() {
+        return min;
+    }
+
+    public void setMin(HeapNode min) {
+        this.min = min;
+    }
+
+    public int getMarked() {
+        return marked;
+    }
+
+    public void setMarked(int marked) {
+        this.marked = marked;
+    }
+
+    public HeapNode getFirst() {
+        return first;
+    }
+
+    public void setFirst(HeapNode first) {
+        this.first = first;
+    }
+
     private void considulation (){ // W.C - O(n) amort - O(logn)
         HeapNode[] nodeBox = new HeapNode[this.size];
         HeapNode curr = this.first;
-        while (curr.next != this.first){
+        boolean petch = true;
+        while (curr != this.first || petch){
             HeapNode tmp = curr.next;
             curr.next = null; // unplugged curr from siblings
             curr.prev = null;
             int tmpRank = curr.rank;
             HeapNode tmpCurr = curr;
-
+            petch = false;
             while (nodeBox[tmpRank] != null) {
                 tmpCurr = connect(tmpCurr, nodeBox[tmpRank]);
                 nodeBox[tmpRank] = null;
@@ -224,6 +286,8 @@ public class FibonacciHeap
         for (int i =0; i < nodeBox.length; i ++){
             if(nodeBox[i] != null){
                 this.first = nodeBox[i];
+                this.first.next = this.first;
+                this.first.prev = this.first;
                 p = i;
                 break;
             }
@@ -322,18 +386,23 @@ public class FibonacciHeap
             return new int[0];
         }
         int maxRank = 0;
-        while (curr.next != ( this.first)){
+        boolean bool = true;
+        while ((curr !=this.first)||bool){
             if (curr.rank > maxRank){
                 maxRank = curr.rank;
             }
             curr = curr.next;
+            bool = false;
         }
     	int[] arr = new int[maxRank+1];
 
         curr = this.first;
-        while (curr.next != ( this.first)) {
+        bool = true;
+        while ((curr != this.first) || bool) {
             int rank = curr.rank;
             arr[rank] += 1;
+            bool = false;
+            curr = curr.next;
         }
 
         return arr;
@@ -374,6 +443,7 @@ public class FibonacciHeap
     }
 
     public void cutNode(HeapNode node){
+        node.parent.rank -= 1;
         this.rootsNum += 1;
         totalCuts += 1;
         if(node.mark){
@@ -448,6 +518,7 @@ public class FibonacciHeap
         return this.rootsNum + 2*this.marked;
     }
 
+
    /**
     * public static int totalLinks() 
     *
@@ -513,8 +584,71 @@ public class FibonacciHeap
     *  
     */
     public static class HeapNode{
+       public int getRank() {
+           return rank;
+       }
 
-        private String info;
+       public void setRank(int rank) {
+           this.rank = rank;
+       }
+
+       public HeapNode getPrev() {
+           return prev;
+       }
+
+       public void setPrev(HeapNode prev) {
+           this.prev = prev;
+       }
+
+       public HeapNode getParent() {
+           return parent;
+       }
+
+       public void setParent(HeapNode parent) {
+           this.parent = parent;
+       }
+
+       public HeapNode getOriginPointer() {
+           return originPointer;
+       }
+
+       public void setOriginPointer(HeapNode originPointer) {
+           this.originPointer = originPointer;
+       }
+
+       public HeapNode getNext() {
+           return next;
+       }
+
+       public void setNext(HeapNode next) {
+           this.next = next;
+       }
+
+       public int getKey() {
+           return key;
+       }
+
+       public void setKey(int key) {
+           this.key = key;
+       }
+
+       public String getInfo() {
+           return info;
+       }
+
+       public void setInfo(String info) {
+           this.info = info;
+       }
+
+       public HeapNode getChild() {
+           return child;
+       }
+
+       public void setChild(HeapNode child) {
+           this.child = child;
+       }
+
+       private String info;
     	public int key;
 
 
@@ -552,5 +686,8 @@ public class FibonacciHeap
             this.prev = this;
         }
 
+       public boolean getMarked() {
+           return mark;
+       }
    }
 }
