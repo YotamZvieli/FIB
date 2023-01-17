@@ -97,7 +97,14 @@ public class FibonacciHeap
     HeapNode tmpMinNode = this.min;
     HeapNode prevNode = this.min.prev;
     HeapNode nextNode = this.min.next;
-    if(this.rootsNum == 1 && this.min.child != null){
+    if (this.rootsNum == 1 && this.min.child == null){
+        rootsNum = 0;
+        this.first = this.min = null;
+        size = 0;
+        this.marked = 0;
+        return;
+    }
+    if(this.rootsNum == 1){
         this.first = tmpMinNode.child;
         this.size -= 1;
         HeapNode current = this.first;
@@ -114,8 +121,10 @@ public class FibonacciHeap
         if(current.key < miniNode.key){
             miniNode = current;
         }
+        this.min = miniNode;
         current.parent = null;
         this.rootsNum = cnt + 1;
+        this.considulation();
         return;
     }
     if (tmpMinNode.child == null){
@@ -165,6 +174,7 @@ public class FibonacciHeap
                 node2.parent = node1;
                 node1.rank = 1;
                 node2.next = node2;
+                node2.prev = node2;
                 return node1;
             }
             else {
@@ -172,6 +182,7 @@ public class FibonacciHeap
                 node1.parent = node2;
                 node2.rank = 1;
                 node1.next = node1;
+                node1.prev = node1;
                 return node2;
             }
         }
@@ -345,6 +356,7 @@ public class FibonacciHeap
             this.first = heap2.first;
             this.size = heap2.size();
             this.rootsNum = heap2.rootsNum;
+            this.marked = heap2.marked;
         }
         else { //both heaps are not empty
             HeapNode lastOne = this.first.prev;
@@ -357,6 +369,7 @@ public class FibonacciHeap
                 this.min = heap2.min;
             }
             this.size += heap2.size();
+            this.marked += heap2.marked;
             this.rootsNum += heap2.rootsNum;
         }
     }
@@ -554,6 +567,9 @@ public class FibonacciHeap
     */
     public static int[] kMin(FibonacciHeap H, int k)
     {
+        if(H.isEmpty()){
+            return new int[0];
+        }
         FibonacciHeap helpHeap = new FibonacciHeap();
         int[] arr = new int[k];
         HeapNode Hmin = H.findMin();
@@ -566,9 +582,11 @@ public class FibonacciHeap
             helpHeap.deleteMin();
             if(pointer.child != null) {
                 curr = pointer.child;
-                while (curr.next != pointer.child) {
+                boolean bool = true;
+                while (curr != pointer.child || bool) {
                     helpHeap.insert(curr.key,curr);
                     curr = curr.next;
+                    bool = false;
                 }
                 helpHeap.insert(curr.key,curr);
             }
