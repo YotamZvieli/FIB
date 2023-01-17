@@ -110,17 +110,17 @@ public class FibonacciHeap
         HeapNode current = this.first;
         HeapNode miniNode = new HeapNode(Integer.MAX_VALUE);
         int cnt = 0;
-        while (current.next != this.first){
+        boolean bool = true;
+        while (current != this.first || bool){
             current.parent = null;
             if(current.key < miniNode.key){
                 miniNode = current;
             }
             current = current.next;
             cnt += 1;
+            bool = false;
         }
-        if(current.key < miniNode.key){
-            miniNode = current;
-        }
+
         this.min = miniNode;
         current.parent = null;
         this.rootsNum = cnt + 1;
@@ -148,13 +148,15 @@ public class FibonacciHeap
         }
     }
     HeapNode curr = this.first;
-    while (curr.next != this.first){
+    boolean bool = true;
+    while ((curr != this.first) || bool){
         if(curr.mark) {
             curr.mark = false;
             this.marked -= 1;
         }
         curr.parent = null;
         curr = curr.next;
+        bool = false;
     }
     this.considulation();
     this.size -= 1;
@@ -322,6 +324,7 @@ public class FibonacciHeap
                 minNode = nodeBox[j];
             }
             if (nodeBox[j]  != null){
+                nodeBox[j].mark = false;
                 this.rootsNum += 1;
             }
         }
@@ -501,6 +504,9 @@ public class FibonacciHeap
                 this.marked += 1;
                 cutNode(node);
             }
+            else {
+                cutNode(node);
+            }
         }
 
     }
@@ -588,7 +594,6 @@ public class FibonacciHeap
                     curr = curr.next;
                     bool = false;
                 }
-                helpHeap.insert(curr.key,curr);
             }
         }
         return arr;
