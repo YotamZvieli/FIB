@@ -123,7 +123,7 @@ public class FibonacciHeap
 
         this.min = miniNode;
         current.parent = null;
-        this.rootsNum = cnt + 1;
+        this.rootsNum = cnt;
         this.considulation();
         return;
     }
@@ -277,7 +277,8 @@ public class FibonacciHeap
     }
 
     private void considulation (){ // W.C - O(n) amort - O(logn)
-        HeapNode[] nodeBox = new HeapNode[this.size];
+        int size  = (int) (Math.log10(this.size)/(Math.log10(0.5+Math.sqrt(1.25))));
+        HeapNode[] nodeBox = new HeapNode[size + 10];
         HeapNode curr = this.first;
         boolean petch = true;
         while (curr != this.first || petch){
@@ -324,12 +325,14 @@ public class FibonacciHeap
                 minNode = nodeBox[j];
             }
             if (nodeBox[j]  != null){
-                nodeBox[j].mark = false;
+                if (nodeBox[j].mark){
+                    nodeBox[j].mark = false;
+                    this.marked -= 1;
+                }
                 this.rootsNum += 1;
             }
         }
         this.min = minNode;
-
         }
 
 
@@ -433,6 +436,10 @@ public class FibonacciHeap
     */
     public void delete(HeapNode x) 
     {
+        if(x.isMark()){
+            x.mark = false;
+            this.marked -= 1;
+        }
         decreaseKey(x, Integer.MAX_VALUE);
         deleteMin();
     }
@@ -445,13 +452,22 @@ public class FibonacciHeap
     */
     public void decreaseKey(HeapNode x, int delta)
     {
-        x.key -= delta;
+        if ((x.key - delta) > x.key){
+            x.key = Integer.MIN_VALUE;
+        }
+        else {
+            x.key -= delta;
+        }
         if (this.min.key > x.key){
             this.min = x;
         }
 
         if (x.parent != null){ // x is not root
             if (x.key < x.parent.key){
+                if(x.isMark()){
+                    x.mark = false;
+                    this.marked -= 1;
+                }
                 cascadingCut(x);
             }
         }
@@ -496,6 +512,9 @@ public class FibonacciHeap
             if(!ifRoot(node.parent)) {
                 node.parent.mark = true;
                 this.marked += 1;
+            }
+            if (node.mark){
+                cutNode(node);
             }
         }
         else {
