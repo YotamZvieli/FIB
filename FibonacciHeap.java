@@ -531,6 +531,11 @@ public class FibonacciHeap
         }
 
     }
+    /**
+     * public boolean ifRoot(HeapNode node)
+     *
+     * Return if node is rood by checking if parent is null.
+     */
     private boolean ifRoot(HeapNode node){
         return node.parent == null;
     }
