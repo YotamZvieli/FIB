@@ -272,7 +272,12 @@ public class FibonacciHeap
     public void setFirst(HeapNode first) {
         this.first = first;
     }
-
+    /**
+     * private void considulation()
+     *
+     * After delete minimum linking all roots and find new min node - O(n) Wc, O(log n) Amortized.
+     *
+     */
     private void considulation (){ // W.C - O(n) amort - O(logn)
         int size  = (int) (Math.log10(this.size)/(Math.log10(0.5+Math.sqrt(1.25))));
         HeapNode[] nodeBox = new HeapNode[size + 10];
