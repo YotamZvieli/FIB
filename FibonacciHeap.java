@@ -89,7 +89,7 @@ public class FibonacciHeap
     * Deletes the node containing the minimum key.
     *
     */
-    public void deleteMin()
+    public void deleteMin() //w.c - O(n) amortized O(logn)
     {
     HeapNode tmpMinNode = this.min;
     HeapNode prevNode = this.min.prev;
@@ -108,7 +108,7 @@ public class FibonacciHeap
         HeapNode miniNode = new HeapNode(Integer.MAX_VALUE);
         int cnt = 0;
         boolean bool = true;
-        while (current != this.first || bool){
+        while (current != this.first || bool){ //set parent and find new minimum
             current.parent = null;
             if(current.key < miniNode.key){
                 miniNode = current;
@@ -146,7 +146,7 @@ public class FibonacciHeap
     }
     HeapNode curr = this.first;
     boolean bool = true;
-    while ((curr != this.first) || bool){
+    while ((curr != this.first) || bool){ //make all roots not marked
         if(curr.mark) {
             curr.mark = false;
             this.marked -= 1;
@@ -447,7 +447,7 @@ public class FibonacciHeap
     * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
     */
-    public void decreaseKey(HeapNode x, int delta)
+    public void decreaseKey(HeapNode x, int delta) // W.C - O(n) amort - O(logn)
     {
         if ((x.key - delta) > x.key){
             x.key = Integer.MIN_VALUE;
@@ -471,7 +471,7 @@ public class FibonacciHeap
 
     }
 
-    public void cutNode(HeapNode node){
+    public void cutNode(HeapNode node){ //O(1)
         node.parent.rank -= 1;
         this.rootsNum += 1;
         totalCuts += 1;
@@ -499,7 +499,7 @@ public class FibonacciHeap
         this.first.prev = node;
         this.first = node;
     }
-    public void cascadingCut(HeapNode node){
+    public void cascadingCut(HeapNode node){//w.c O(logn) amort O(1)
         if (node.parent.isMark()){
             while (node.parent != null && node.parent.isMark()){
                 HeapNode tmpParent = node.parent;
