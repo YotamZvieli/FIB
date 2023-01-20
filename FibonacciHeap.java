@@ -1,4 +1,6 @@
 /**
+ * Name1: Nofar Shlomo Id:
+ * Name2: Yotam Zvieli Id: 209497023
  * FibonacciHeap
  *
  * An implementation of a Fibonacci Heap over integers.
@@ -12,6 +14,66 @@ public class FibonacciHeap
     int size;
     static int totalLinks;
     static int totalCuts;
+    /**
+     * Getters and Setters
+     */
+    public static int getTotalLinks() {
+        return totalLinks;
+    }
+
+    public static void setTotalLinks(int totalLinks) {
+        FibonacciHeap.totalLinks = totalLinks;
+    }
+
+    public static int getTotalCuts() {
+        return totalCuts;
+    }
+
+    public static void setTotalCuts(int totalCuts) {
+        FibonacciHeap.totalCuts = totalCuts;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getRootsNum() {
+        return rootsNum;
+    }
+
+    public void setRootsNum(int rootsNum) {
+        this.rootsNum = rootsNum;
+    }
+
+    public HeapNode getMin() {
+        return min;
+    }
+
+    public void setMin(HeapNode min) {
+        this.min = min;
+    }
+
+    public int getMarked() {
+        return marked;
+    }
+
+    public void setMarked(int marked) {
+        this.marked = marked;
+    }
+
+    public HeapNode getFirst() {
+        return first;
+    }
+
+    public void setFirst(HeapNode first) {
+        this.first = first;
+    }
+
+
    /**
     * public boolean isEmpty()
     *
@@ -215,62 +277,6 @@ public class FibonacciHeap
         }
         root.rank += 1;
         return root;
-    }
-
-    public static int getTotalLinks() {
-        return totalLinks;
-    }
-
-    public static void setTotalLinks(int totalLinks) {
-        FibonacciHeap.totalLinks = totalLinks;
-    }
-
-    public static int getTotalCuts() {
-        return totalCuts;
-    }
-
-    public static void setTotalCuts(int totalCuts) {
-        FibonacciHeap.totalCuts = totalCuts;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public int getRootsNum() {
-        return rootsNum;
-    }
-
-    public void setRootsNum(int rootsNum) {
-        this.rootsNum = rootsNum;
-    }
-
-    public HeapNode getMin() {
-        return min;
-    }
-
-    public void setMin(HeapNode min) {
-        this.min = min;
-    }
-
-    public int getMarked() {
-        return marked;
-    }
-
-    public void setMarked(int marked) {
-        this.marked = marked;
-    }
-
-    public HeapNode getFirst() {
-        return first;
-    }
-
-    public void setFirst(HeapNode first) {
-        this.first = first;
     }
     /**
      * private void considulation()
@@ -633,6 +639,18 @@ public class FibonacciHeap
     *  
     */
     public static class HeapNode{
+       private String info;
+       public int key;
+       private int rank;
+       private boolean mark;
+       private HeapNode child;
+       private HeapNode next;
+       private HeapNode prev;
+       private HeapNode parent;
+       private HeapNode originPointer;
+       /**
+        * Getters and Setters
+        */
        public int getRank() {
            return rank;
        }
@@ -696,14 +714,9 @@ public class FibonacciHeap
        public void setChild(HeapNode child) {
            this.child = child;
        }
-
-       private String info;
-    	public int key;
-
-
-       private int rank;
-        private boolean mark;
-
+       public boolean getMarked() {
+           return mark;
+       }
        public boolean isMark() {
            if (this.parent == null){ //if this is root
                this.mark = false;
@@ -714,13 +727,6 @@ public class FibonacciHeap
        public void setMark(boolean mark) {
            this.mark = mark;
        }
-
-       private HeapNode child;
-        private HeapNode next;
-        private HeapNode prev;
-        private HeapNode parent;
-        private HeapNode originPointer;
-
 
        public HeapNode(int key) {
            this.key = key;
@@ -734,9 +740,5 @@ public class FibonacciHeap
             this.next = this;
             this.prev = this;
         }
-
-       public boolean getMarked() {
-           return mark;
-       }
    }
 }
