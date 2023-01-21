@@ -510,6 +510,14 @@ public class FibonacciHeap
         this.first.prev = node;
         this.first = node;
     }
+
+
+    /**
+     * public void cascadingCut(HeapNode node)
+     *
+     * Checks if the parent of the node is mark, if it is mark perform while loop up until the parent isnt marked
+     * and call cutNode to actually cut the node from his parent 
+     */
     public void cascadingCut(HeapNode node){//w.c O(logn) amort O(1)
         if (node.parent.isMark()){
             while (node.parent != null && node.parent.isMark()){
@@ -540,7 +548,7 @@ public class FibonacciHeap
     /**
      * public boolean ifRoot(HeapNode node)
      *
-     * Return if node is rood by checking if parent is null.
+     * Return if node is root by checking if parent is null.
      */
     private boolean ifRoot(HeapNode node){
         return node.parent == null;
