@@ -118,6 +118,14 @@ public class FibonacciHeap
         }
         return newNode;
     }
+    /**
+     * public HeapNode insert(int key) - OverLode insert
+     *
+     * Creates a node (of type HeapNode) which contains the given key, and inserts it into the heap.
+     * The added key is assumed not to already belong to the heap.
+     *
+     * Returns the newly created node.
+     */
 
     public HeapNode insert(int key,HeapNode originalCopyNode)
     {
@@ -481,6 +489,11 @@ public class FibonacciHeap
         }
 
     }
+    /**
+     *public void cutNode(HeapNode node)
+     *
+     * Cut node from his tree and make the node and is subtree as new root in the heap.
+     */
 
     public void cutNode(HeapNode node){ //O(1)
         node.parent.rank -= 1;
