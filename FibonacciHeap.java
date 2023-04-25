@@ -1,6 +1,4 @@
 /**
- * Name1: Nofar Shlomo Id: 208410084
- * Name2: Yotam Zvieli Id: 209497023
  * FibonacciHeap
  *
  * An implementation of a Fibonacci Heap over integers.
